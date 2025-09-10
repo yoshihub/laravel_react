@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TodoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -9,9 +10,9 @@ use Illuminate\Http\Response;
 
 class TodoController extends Controller
 {
-    protected \App\Services\TodoService $todoService;
+    protected TodoService $todoService;
 
-    public function __construct(\App\Services\TodoService $todoService)
+    public function __construct(TodoService $todoService)
     {
         $this->todoService = $todoService;
     }

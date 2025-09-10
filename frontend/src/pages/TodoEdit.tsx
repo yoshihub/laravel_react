@@ -3,11 +3,8 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../App.css';
 
-// API URL 正規化: フルURLでなければ /api を利用（Viteプロキシ）
-const rawApiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? '').toString().trim();
-const API_BASE_URL = rawApiBaseUrl && /^https?:\/\//.test(rawApiBaseUrl)
-  ? rawApiBaseUrl.replace(/\/+$/, '')
-  : '/api';
+// API URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // インターフェース
 interface Todo {
