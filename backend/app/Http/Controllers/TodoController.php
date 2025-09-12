@@ -26,6 +26,15 @@ class TodoController extends Controller
     {
         $todos = $this->todoService->getList();
 
+        unset($todos);
+        if (!$todos) {
+            return response()->json(
+                ['status' => 'failed'],
+                500,
+                [],
+                JSON_UNESCAPED_UNICODE
+            );
+        }
         return response()->json(
             $todos,
             Response::HTTP_OK,

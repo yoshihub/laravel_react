@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import apiClient from '../utils/axiosConfig';
+import Header from '../components/Header';
 import '../App.css';
-
-// API URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // インターフェース
 interface Todo {
@@ -24,13 +22,13 @@ export default function TodoList() {
 
   // Todo 一覧取得
   const getTodos = useCallback(() => {
-    axios.get(`${API_BASE_URL}/todos`)
+    apiClient.get('/todos')
       .then(res => {
         const todos = Array.isArray(res.data.data) ? res.data.data : [];
         setTodos(todos);
       })
       .catch(console.error);
-  }, [API_BASE_URL]);
+  }, []);
 
   // バリデーションチェック
   const validateTodo = (todo: { title: string; description?: string | null }) => {
@@ -49,7 +47,7 @@ export default function TodoList() {
       return;
     }
 
-    axios.post(`${API_BASE_URL}/todos`, {
+    apiClient.post('/todos', {
       ...newTodo,
       status: 0,
     })
@@ -74,7 +72,7 @@ export default function TodoList() {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
 
-    axios.put(`${API_BASE_URL}/todos/${id}`, {
+    apiClient.put(`/todos/${id}`, {
       title: todo.title,
       description: todo.description,
       status,
@@ -86,7 +84,7 @@ export default function TodoList() {
   // Todo 削除
   const deleteTodo = (id: number) => {
     if (window.confirm('本当に削除しますか？')) {
-      axios.delete(`${API_BASE_URL}/todos/${id}`)
+      apiClient.delete(`/todos/${id}`)
         .then(getTodos)
         .catch(console.error);
     }
@@ -97,8 +95,10 @@ export default function TodoList() {
   }, [getTodos]);
 
   return (
-    <div className="page-container">
-      <h1 className="section-title">➕ Todo 作成</h1>
+    <div>
+      <Header />
+      <div className="page-container">
+        <h1 className="section-title">➕ Todo 作成</h1>
 
       <div className="form-section">
         <div className="form-group">
@@ -174,6 +174,7 @@ export default function TodoList() {
           </li>
         ))}
       </ul>
+      </div>
     </div>
   );
 }

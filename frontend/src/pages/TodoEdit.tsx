@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import apiClient from '../utils/axiosConfig';
+import Header from '../components/Header';
 import '../App.css';
-
-// API URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // インターフェース
 interface Todo {
@@ -24,7 +22,7 @@ export default function TodoEdit() {
 
   // Todo 取得
   const getTodo = useCallback(() => {
-    axios.get(`${API_BASE_URL}/todos/${id}`)
+    apiClient.get(`/todos/${id}`)
       .then(res => {
         const data = res.data.data;
         setTodo({
@@ -36,7 +34,7 @@ export default function TodoEdit() {
         });
       })
       .catch(console.error);
-  }, [API_BASE_URL, id]);
+  }, [id]);
 
   // バリデーションチェック
   const validateTodo = (todo: { title: string; description?: string | null }) => {
@@ -57,7 +55,7 @@ export default function TodoEdit() {
       return;
     }
 
-    axios.put(`${API_BASE_URL}/todos/${id}`, todo)
+    apiClient.put(`/todos/${id}`, todo)
       .then(() => navigate('/'))
       .catch((error) => {
         if (error.response?.status === 422) {
@@ -74,12 +72,19 @@ export default function TodoEdit() {
 
   // 読み込み中表示
   if (!todo) {
-    return <div className="page-container">読み込み中...</div>;
+    return (
+      <div>
+        <Header />
+        <div className="page-container">読み込み中...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="page-container">
-      <h1 className="section-title">✏️ Todo 編集</h1>
+    <div>
+      <Header />
+      <div className="page-container">
+        <h1 className="section-title">✏️ Todo 編集</h1>
 
       <section className="form-section todo-form">
         <div className="form-group">
@@ -127,6 +132,7 @@ export default function TodoEdit() {
           <button className="btn-secondary" onClick={() => navigate('/')}>戻る</button>
         </div>
       </section>
+      </div>
     </div>
   );
 }
